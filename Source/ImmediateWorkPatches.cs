@@ -49,10 +49,16 @@ namespace Lilly.CheatWork
     [HarmonyPatch(typeof(Zone_Growing), nameof(Zone_Growing.SetPlantDefToGrow))]
     internal static class Zone_Growing_SetPlantDefToGrow_Patch
     {
-        [HarmonyPostfix]
-        private static void Postfix(Zone_Growing __instance)
+        [HarmonyPrefix]
+        private static void Prefix(Zone_Growing __instance, out ThingDef __state)
         {
-            ImmediateWork.ProcessGrowingZone(__instance);
+            __state = __instance?.GetPlantDefToGrow();
+        }
+
+        [HarmonyPostfix]
+        private static void Postfix(Zone_Growing __instance, ThingDef __state)
+        {
+            ImmediateWork.ProcessGrowingZoneCropChange(__instance, __state);
         }
     }
 
@@ -219,14 +225,56 @@ namespace Lilly.CheatWork
             }
         }
 
-        internal static void ProcessGrowingZone(Zone_Growing zone)
+        internal static void ProcessGrowingZoneCropChange(Zone_Growing zone, ThingDef previousPlantDef)
         {
             if (zone == null || !CheatWorkMod.Enabled || processing || !InGame)
                 return;
 
+            ThingDef newPlantDef = zone.GetPlantDefToGrow();
+            if (newPlantDef == null || newPlantDef == previousPlantDef)
+                return;
+
+            Map map = zone.Map;
+            if (map == null)
+                return;
+
             List<IntVec3> cells = zone.Cells;
             for (int i = 0; i < cells.Count; i++)
-                ProcessGrowingZoneCell(zone, cells[i]);
+            {
+                IntVec3 cell = cells[i];
+                if (!cell.InBounds(map))
+                    continue;
+
+                List<Thing> things = map.thingGrid.ThingsListAtFast(cell);
+                Plant oldPlant = null;
+                for (int j = 0; j < things.Count; j++)
+                {
+                    Plant candidate = things[j] as Plant;
+                    if (candidate != null && candidate.def != newPlantDef)
+                    {
+                        oldPlant = candidate;
+                        break;
+                    }
+                }
+
+                if (oldPlant != null && oldPlant.Spawned && !oldPlant.Destroyed)
+                {
+                    using (WorkOutputStorage.Begin(map))
+                    {
+                        processing = true;
+                        try
+                        {
+                            CompletePlantWork(map, oldPlant, PlantDestructionMode.Chop, false);
+                        }
+                        finally
+                        {
+                            processing = false;
+                        }
+                    }
+                }
+
+                ProcessGrowingZoneCell(zone, cell);
+            }
         }
 
         internal static void ProcessGrowingZoneCell(Zone_Growing zone, IntVec3 cell)
