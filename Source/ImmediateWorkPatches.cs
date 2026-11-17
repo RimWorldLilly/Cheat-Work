@@ -264,7 +264,10 @@ namespace Lilly.CheatWork
                         processing = true;
                         try
                         {
-                            CompletePlantWork(map, oldPlant, PlantDestructionMode.Chop, false);
+                            PlantDestructionMode mode = oldPlant.HarvestableNow
+                                ? PlantDestructionMode.Chop
+                                : PlantDestructionMode.Cut;
+                            CompletePlantWork(map, oldPlant, mode, false);
                         }
                         finally
                         {
