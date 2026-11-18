@@ -235,6 +235,57 @@ namespace Lilly.CheatWork
             }
         }
 
+        internal static void ProcessGrowingZoneCreation(Zone_Growing zone)
+        {
+            if (zone == null || !CheatWorkMod.Enabled || processing || !InGame)
+                return;
+
+            Map map = zone.Map;
+            if (map == null)
+                return;
+
+            List<IntVec3> cells = zone.Cells;
+            for (int i = 0; i < cells.Count; i++)
+            {
+                IntVec3 cell = cells[i];
+                if (!cell.InBounds(map))
+                    continue;
+
+                List<Thing> things = map.thingGrid.ThingsListAtFast(cell);
+                Plant existingPlant = null;
+                for (int j = 0; j < things.Count; j++)
+                {
+                    Plant candidate = things[j] as Plant;
+                    if (candidate != null && candidate.Spawned && !candidate.Destroyed)
+                    {
+                        existingPlant = candidate;
+                        break;
+                    }
+                }
+
+                if (existingPlant != null)
+                {
+                    using (WorkOutputStorage.Begin(map))
+                    {
+                        processing = true;
+                        try
+                        {
+                            PlantDestructionMode mode = existingPlant.HarvestableNow
+                                ? PlantDestructionMode.Chop
+                                : PlantDestructionMode.Cut;
+                            CompletePlantWork(map, existingPlant, mode, false);
+                        }
+                        finally
+                        {
+                            processing = false;
+                        }
+                    }
+                }
+
+                ProcessGrowingZoneCell(zone, cell);
+            }
+        }
+
         internal static void ProcessGrowingZoneCropChange(Zone_Growing zone, ThingDef previousPlantDef)
         {
             if (zone == null || !CheatWorkMod.Enabled || processing || !InGame)
