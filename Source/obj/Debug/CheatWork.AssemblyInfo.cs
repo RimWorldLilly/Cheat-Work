@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CheatWork")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4f0e180a1f071c129476553ec00048c73128840f")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9f7a5ccf9685ac359a1029bb8c9fc3b7a90362da")]
 [assembly: System.Reflection.AssemblyProductAttribute("CheatWork")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CheatWork")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
