@@ -219,36 +219,6 @@ namespace Lilly.CheatWork
     }
 
     [HarmonyPatch]
-    internal static class GenPlace_TryPlaceThing_WorkOutputStorage_Patch
-    {
-        private static IEnumerable<MethodBase> TargetMethods()
-        {
-            return AccessTools.GetDeclaredMethods(typeof(GenPlace))
-                .Where(method =>
-                {
-                    if (method.Name != nameof(GenPlace.TryPlaceThing) ||
-                        method.ReturnType != typeof(bool))
-                        return false;
-
-                    ParameterInfo[] parameters = method.GetParameters();
-                    return parameters.Length == 9 &&
-                        parameters[0].ParameterType == typeof(Thing) &&
-                        parameters[2].ParameterType == typeof(Map) &&
-                        parameters[4].ParameterType == typeof(Thing).MakeByRefType();
-                });
-        }
-
-        private static void Postfix(object[] __args, bool __result)
-        {
-            if (!__result || !WorkOutputStorage.IsCapturing)
-                return;
-
-            Thing placedThing = __args[4] as Thing ?? __args[0] as Thing;
-            WorkOutputStorage.RecordSpawnedThing(placedThing, __args[2] as Map, false);
-        }
-    }
-
-    [HarmonyPatch]
     internal static class JobDriver_WorkOutputStorage_Patch
     {
         private static IEnumerable<MethodBase> TargetMethods()
