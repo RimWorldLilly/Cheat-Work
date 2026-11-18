@@ -56,7 +56,8 @@ namespace Lilly.CheatWork
             ImmediateWork.ProcessGrowingZoneCreation(__0 as Zone_Growing);
         }
     }
-\n    [HarmonyPatch(typeof(Zone_Growing), nameof(Zone_Growing.SetPlantDefToGrow))]
+
+    [HarmonyPatch(typeof(Zone_Growing), nameof(Zone_Growing.SetPlantDefToGrow))]
     internal static class Zone_Growing_SetPlantDefToGrow_Patch
     {
         [HarmonyPrefix]
