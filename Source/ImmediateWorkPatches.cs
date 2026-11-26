@@ -381,7 +381,7 @@ namespace Lilly.CheatWork
 
             Map map = zone.Map;
             if (map == null || !cell.InBounds(map) ||
-                !PlantUtility.GrowthSeasonNow(cell, map) ||
+                !PlantUtility.GrowthSeasonNow(map, plantDef) ||
                 !PlantUtility.SnowAllowsPlanting(cell, map) ||
                 PlantUtility.AdjacentSowBlocker(plantDef, cell, map) != null ||
                 map.fertilityGrid.FertilityAt(cell) < plantDef.plant.fertilityMin)
