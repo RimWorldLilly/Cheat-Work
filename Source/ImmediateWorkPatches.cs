@@ -103,9 +103,30 @@ namespace Lilly.CheatWork
             }
         }
 
+        private static bool FeatureEnabled(string defName)
+        {
+            switch (defName)
+            {
+                case "Mine":
+                case "MineVein":
+                    return CheatWorkMod.InstantMining;
+                case "Deconstruct":
+                    return CheatWorkMod.InstantDeconstruction;
+                case "RemoveFloor":
+                case "RemoveFoundation":
+                    return CheatWorkMod.InstantFloorRemoval;
+                case "CutPlant":
+                    return CheatWorkMod.InstantPlantCutting;
+                case "HarvestPlant":
+                    return CheatWorkMod.InstantPlantHarvest;
+                default:
+                    return false;
+            }
+        }
+
         internal static void ProcessDesignation(DesignationManager manager, Designation designation)
         {
-            if (!CheatWorkMod.Enabled || processing || !InGame || designation == null || designation.def == null)
+            if (processing || !InGame || designation == null || designation.def == null || !FeatureEnabled(designation.def.defName))
                 return;
 
             string defName = designation.def.defName;
@@ -170,7 +191,7 @@ namespace Lilly.CheatWork
             if (processing || pendingMines.Count == 0)
                 return;
 
-            if (!CheatWorkMod.Enabled || !InGame)
+            if (!CheatWorkMod.InstantMining || !InGame)
             {
                 pendingMines.Clear();
                 queuedMineDesignations.Clear();
@@ -213,7 +234,7 @@ namespace Lilly.CheatWork
 
         internal static void ProcessRoofRemoval(Area area, IntVec3 cell, bool value)
         {
-            if (!CheatWorkMod.Enabled || processing || !InGame || !value || !(area is Area_NoRoof))
+            if (!CheatWorkMod.InstantRoofRemoval || processing || !InGame || !value || !(area is Area_NoRoof))
                 return;
 
             Map map = area.Map;
@@ -238,7 +259,7 @@ namespace Lilly.CheatWork
 
         internal static void ProcessGrowingZoneCreation(Zone_Growing zone)
         {
-            if (zone == null || !CheatWorkMod.Enabled || processing || !InGame)
+            if (zone == null || !CheatWorkMod.InstantSowing || processing || !InGame)
                 return;
 
             Map map = zone.Map;
@@ -289,7 +310,7 @@ namespace Lilly.CheatWork
 
         internal static void ProcessGrowingZoneCropChange(Zone_Growing zone, ThingDef previousPlantDef)
         {
-            if (zone == null || !CheatWorkMod.Enabled || processing || !InGame)
+            if (zone == null || !CheatWorkMod.InstantSowing || processing || !InGame)
                 return;
 
             ThingDef newPlantDef = zone.GetPlantDefToGrow();
@@ -344,7 +365,7 @@ namespace Lilly.CheatWork
 
         internal static void ProcessGrowingZoneCell(Zone_Growing zone, IntVec3 cell)
         {
-            if (zone == null || !CheatWorkMod.Enabled || processing || !InGame ||
+            if (zone == null || !CheatWorkMod.InstantSowing || processing || !InGame ||
                 !zone.allowSow || !zone.CanAcceptSowNow())
                 return;
 
