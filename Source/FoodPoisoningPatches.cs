@@ -8,8 +8,9 @@ namespace Lilly.CheatWork
     {
         private static bool Prefix(FoodPoisonCause newCause)
         {
-            return newCause != FoodPoisonCause.FilthyKitchen &&
-                newCause != FoodPoisonCause.IncompetentCook;
+            return !CheatWorkMod.PreventCookingFoodPoisoning ||
+                (newCause != FoodPoisonCause.FilthyKitchen &&
+                 newCause != FoodPoisonCause.IncompetentCook);
         }
     }
 }
