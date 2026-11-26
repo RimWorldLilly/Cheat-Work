@@ -382,6 +382,7 @@ namespace Lilly.CheatWork
             Map map = zone.Map;
             if (map == null || !cell.InBounds(map) ||
                 !PlantUtility.GrowthSeasonNow(cell, map) ||
+                !PlantUtility.SnowAllowsPlanting(cell, map) ||
                 PlantUtility.AdjacentSowBlocker(plantDef, cell, map) != null ||
                 map.fertilityGrid.FertilityAt(cell) < plantDef.plant.fertilityMin)
                 return false;
@@ -402,6 +403,20 @@ namespace Lilly.CheatWork
                      thing.def.category == ThingCategory.Building ||
                      thing.def.category == ThingCategory.Plant))
                     return false;
+            }
+
+            if (plantDef.passability == Traversability.Impassable)
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    IntVec3 adjacent = cell + GenAdj.CardinalDirections[i];
+                    if (!adjacent.InBounds(map))
+                        continue;
+
+                    Building edifice = adjacent.GetEdifice(map);
+                    if (edifice != null && edifice.def.IsDoor)
+                        return false;
+                }
             }
 
             return true;
