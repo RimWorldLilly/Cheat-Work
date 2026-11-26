@@ -1,4 +1,9 @@
 
+v1.4.30
+
+- Fixed the RimWorld 1.7 GrowthSeasonNow API call in growing-zone sowing prechecks.
+
+----------------------------------------
 v1.4.29
 
 - Check sowing conditions before removing an existing plant from a newly created or changed growing zone.
