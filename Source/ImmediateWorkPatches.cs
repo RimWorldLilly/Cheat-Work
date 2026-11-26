@@ -285,7 +285,9 @@ namespace Lilly.CheatWork
                     }
                 }
 
-                if (existingPlant != null)
+                ThingDef plantDef = zone.GetPlantDefToGrow();
+                if (existingPlant != null &&
+                    CanReplaceExistingPlantForImmediateSowing(zone, cell, existingPlant, plantDef))
                 {
                     using (WorkOutputStorage.Begin(map))
                     {
@@ -340,7 +342,8 @@ namespace Lilly.CheatWork
                     }
                 }
 
-                if (oldPlant != null && oldPlant.Spawned && !oldPlant.Destroyed)
+                if (oldPlant != null && oldPlant.Spawned && !oldPlant.Destroyed &&
+                    CanReplaceExistingPlantForImmediateSowing(zone, cell, oldPlant, newPlantDef))
                 {
                     using (WorkOutputStorage.Begin(map))
                     {
@@ -361,6 +364,47 @@ namespace Lilly.CheatWork
 
                 ProcessGrowingZoneCell(zone, cell);
             }
+        }
+
+        // Do not remove an existing plant until the selected replacement crop
+        // passes the sowing checks that can be evaluated while that plant is present.
+        private static bool CanReplaceExistingPlantForImmediateSowing(
+            Zone_Growing zone,
+            IntVec3 cell,
+            Plant existingPlant,
+            ThingDef plantDef)
+        {
+            if (zone == null || existingPlant == null || plantDef == null ||
+                plantDef.plant == null || !plantDef.plant.Sowable ||
+                !zone.allowSow || !zone.CanAcceptSowNow())
+                return false;
+
+            Map map = zone.Map;
+            if (map == null || !cell.InBounds(map) ||
+                !PlantUtility.GrowthSeasonNow(cell, map) ||
+                PlantUtility.AdjacentSowBlocker(plantDef, cell, map) != null ||
+                map.fertilityGrid.FertilityAt(cell) < plantDef.plant.fertilityMin)
+                return false;
+
+            List<Thing> things = map.thingGrid.ThingsListAtFast(cell);
+            for (int i = 0; i < things.Count; i++)
+            {
+                Thing thing = things[i];
+                if (thing == existingPlant)
+                    continue;
+
+                if (thing is Plant || thing.def.BlocksPlanting(false))
+                    return false;
+
+                if (plantDef.passability == Traversability.Impassable &&
+                    (thing.def.category == ThingCategory.Pawn ||
+                     thing.def.category == ThingCategory.Item ||
+                     thing.def.category == ThingCategory.Building ||
+                     thing.def.category == ThingCategory.Plant))
+                    return false;
+            }
+
+            return true;
         }
 
         internal static void ProcessGrowingZoneCell(Zone_Growing zone, IntVec3 cell)
