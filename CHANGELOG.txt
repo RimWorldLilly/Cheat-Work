@@ -1,7 +1,9 @@
-v1.4.1
+
+v1.4.29
 
 - Check sowing conditions before removing an existing plant from a newly created or changed growing zone.
 - Keep existing plants when the selected replacement crop cannot be planted at that cell.
+
 
 ----------------------------------------
 
