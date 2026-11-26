@@ -72,6 +72,7 @@ namespace Lilly.CheatWork
 
     public sealed class CheatWorkSettings : ModSettings
     {
+        private bool LegacyEnabled = true;
         public bool InstantMining = true;
         public bool InstantDeconstruction = true;
         public bool InstantFloorRemoval = true;
@@ -85,14 +86,15 @@ namespace Lilly.CheatWork
         public override void ExposeData()
         {
             base.ExposeData();
-            Scribe_Values.Look(ref InstantMining, "instantMining", true);
-            Scribe_Values.Look(ref InstantDeconstruction, "instantDeconstruction", true);
-            Scribe_Values.Look(ref InstantFloorRemoval, "instantFloorRemoval", true);
-            Scribe_Values.Look(ref InstantPlantCutting, "instantPlantCutting", true);
-            Scribe_Values.Look(ref InstantPlantHarvest, "instantPlantHarvest", true);
-            Scribe_Values.Look(ref InstantSowing, "instantSowing", true);
-            Scribe_Values.Look(ref InstantRoofRemoval, "instantRoofRemoval", true);
-            Scribe_Values.Look(ref PreventCookingFoodPoisoning, "preventCookingFoodPoisoning", true);
+            Scribe_Values.Look(ref LegacyEnabled, "enabled", true);
+            Scribe_Values.Look(ref InstantMining, "instantMining", LegacyEnabled);
+            Scribe_Values.Look(ref InstantDeconstruction, "instantDeconstruction", LegacyEnabled);
+            Scribe_Values.Look(ref InstantFloorRemoval, "instantFloorRemoval", LegacyEnabled);
+            Scribe_Values.Look(ref InstantPlantCutting, "instantPlantCutting", LegacyEnabled);
+            Scribe_Values.Look(ref InstantPlantHarvest, "instantPlantHarvest", LegacyEnabled);
+            Scribe_Values.Look(ref InstantSowing, "instantSowing", LegacyEnabled);
+            Scribe_Values.Look(ref InstantRoofRemoval, "instantRoofRemoval", LegacyEnabled);
+            Scribe_Values.Look(ref PreventCookingFoodPoisoning, "preventCookingFoodPoisoning", LegacyEnabled);
             Scribe_Values.Look(ref AutoStoreWorkOutputs, "autoStoreWorkOutputs", true);
         }
     }
