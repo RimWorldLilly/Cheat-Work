@@ -27,6 +27,7 @@ namespace Lilly.CheatWork
             listing.CheckboxLabeled("즉시 식물 제초", ref settings.InstantPlantCutting);
             listing.CheckboxLabeled("즉시 식물 수확", ref settings.InstantPlantHarvest);
             listing.CheckboxLabeled("즉시 파종", ref settings.InstantSowing);
+            listing.CheckboxLabeled("요리 작업 즉시 완료", ref settings.InstantCooking);
             listing.CheckboxLabeled("지붕 없음 구역 지정 시 즉시 지붕 제거", ref settings.InstantRoofRemoval);
 
             listing.Gap();
@@ -52,6 +53,7 @@ namespace Lilly.CheatWork
         public static bool InstantPlantCutting => IsEnabled(s => s.InstantPlantCutting);
         public static bool InstantPlantHarvest => IsEnabled(s => s.InstantPlantHarvest);
         public static bool InstantSowing => IsEnabled(s => s.InstantSowing);
+        public static bool InstantCooking => IsEnabled(s => s.InstantCooking);
         public static bool InstantRoofRemoval => IsEnabled(s => s.InstantRoofRemoval);
         public static bool PreventCookingFoodPoisoning => IsEnabled(s => s.PreventCookingFoodPoisoning);
 
@@ -79,6 +81,7 @@ namespace Lilly.CheatWork
         public bool InstantPlantCutting = true;
         public bool InstantPlantHarvest = true;
         public bool InstantSowing = true;
+        public bool InstantCooking = true;
         public bool InstantRoofRemoval = true;
         public bool PreventCookingFoodPoisoning = true;
         public bool AutoStoreWorkOutputs = true;
@@ -93,6 +96,7 @@ namespace Lilly.CheatWork
             Scribe_Values.Look(ref InstantPlantCutting, "instantPlantCutting", LegacyEnabled);
             Scribe_Values.Look(ref InstantPlantHarvest, "instantPlantHarvest", LegacyEnabled);
             Scribe_Values.Look(ref InstantSowing, "instantSowing", LegacyEnabled);
+            Scribe_Values.Look(ref InstantCooking, "instantCooking", LegacyEnabled);
             Scribe_Values.Look(ref InstantRoofRemoval, "instantRoofRemoval", LegacyEnabled);
             Scribe_Values.Look(ref PreventCookingFoodPoisoning, "preventCookingFoodPoisoning", LegacyEnabled);
             Scribe_Values.Look(ref AutoStoreWorkOutputs, "autoStoreWorkOutputs", true);

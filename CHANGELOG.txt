@@ -1,3 +1,9 @@
+v1.4.31
+
+- Added an independent setting to instantly finish cooking bills after ingredients have been delivered to the bill giver.
+- Reuses the vanilla recipe completion flow for ingredient consumption, product creation, bill notifications, and product storage.
+
+----------------------------------------
 
 v1.4.30
 
